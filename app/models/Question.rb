@@ -14,4 +14,21 @@ class Question < ActiveRecord::Base
   )
 
   has_many :responses, :through => :answer_choices, :source => :responses
+
+  def results
+    results = {}
+    self.answer_choices.includes(:responses).each do |answer_choice|
+      results[answer_choice] = answer_choice.responses.length
+    end
+    results
+  end
+
+  def sql_results
+    results = <<-SQL
+    SELECT answer_choices.*, COUNT(responses)
+    FROM answer_choices JOIN responses
+    ON answer_choices.id = responses.answer_choice_id
+    GROUP BY answer_choices
+    SQL
+  end
 end
