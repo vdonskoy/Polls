@@ -30,5 +30,6 @@ class Question < ActiveRecord::Base
     ON answer_choices.id = responses.answer_choice_id
     GROUP BY answer_choices
     SQL
+    results
   end
 end
